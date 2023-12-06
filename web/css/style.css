@@ -1,0 +1,184 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 17/10/2023, 8:13:48 a. m.
+    Author     : Sena
+*/
+
+body{
+    height: 60rem;
+}
+
+.bg-green {
+    --bs-bg-opacity: 1;
+    background-color: rgba(57,169,0,255) !important;
+}
+
+.desplegable-user{
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+.divContenido{
+    margin: 2rem;
+}
+
+.header{
+
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+
+
+}
+
+.header .buttonNav{
+
+    color: black;
+    display: flex;
+    align-items: center;
+
+}
+
+.header .ulNav{
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+
+}
+
+.header .liNav{
+
+    margin: 0.5rem;
+
+}
+
+@media screen and (max-width:480){
+
+    .header .buttonNav{
+
+        display: none;
+
+    }
+    .header .navHorizontal{
+
+        width: 100%;
+        display: none;
+
+    }
+
+    .header .navHorizontal .activo{
+
+        display: block;
+
+    }
+
+    .header .ulNav{
+
+        flex-direction: column;
+
+    }
+
+    .header .liNav{
+
+        margin: 1rem 0;
+
+    }
+
+    .header .navHorizontal{
+
+    }
+
+}
+
+.contenido{
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+}
+.section{
+    margin-top: 6rem;
+}
+.ulSection{
+    display: flex;
+    flex-direction: column;
+}
+.liSection{
+    display: flex;
+    justify-content: space-evenly;
+    width: 15rem;
+    height: min-content;
+    margin: 1rem !important;
+    padding: 0.5rem !important;
+    list-style: none;
+    border-radius: 5px;
+    background-color: rgba(57,200,0,255) !important;
+}
+.svgLiContenido{
+    width: auto;
+    height: auto;
+}
+
+.aLiContenido{
+    color: black;
+    text-decoration: none;
+}
+.aLiContenido:hover{
+    color: black;
+}
+.buttonLiContenido{
+    background-color: transparent;
+    border: none;
+}
+
+.article{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.tabla{
+    width: 85%;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.tabla th{
+    padding: 1rem;
+    text-align: center;
+}
+
+.tabla tr{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.divArticle{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+
+}
+.divForm{
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+}
+.input-form{
+    
+    
+    
+}
