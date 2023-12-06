@@ -16,8 +16,10 @@ import java.util.ArrayList;
 public class Evaluacion {
 
     int idEvaluacion;
+    int idInstructor;
     Instructor Instructor_idInstructor;
-    Boolean aprobada;
+    int idEstado;
+    Estado Estado_idEstado;
     Float nota;
     int paginacion = 10;
 
@@ -29,6 +31,14 @@ public class Evaluacion {
         this.idEvaluacion = idEvaluacion;
     }
 
+    public int getIdInstructor() {
+        return idInstructor;
+    }
+
+    public void setIdInstructor(int idInstructor) {
+        this.idInstructor = idInstructor;
+    }
+
     public Instructor getInstructor_idInstructor() {
         return Instructor_idInstructor;
     }
@@ -37,12 +47,20 @@ public class Evaluacion {
         this.Instructor_idInstructor = Instructor_idInstructor;
     }
 
-    public Boolean getAprobada() {
-        return aprobada;
+    public int getIdEstado() {
+        return idEstado;
     }
 
-    public void setAprobada(Boolean aprobada) {
-        this.aprobada = aprobada;
+    public void setIdEstado(int idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public Estado getEstado_idEstado() {
+        return Estado_idEstado;
+    }
+
+    public void setEstado_idEstado(Estado Estado_idEstado) {
+        this.Estado_idEstado = Estado_idEstado;
     }
 
     public Float getNota() {
@@ -55,7 +73,7 @@ public class Evaluacion {
 
     @Override
     public String toString() {
-        return "Evaluacion{" + "idEvaluacion=" + idEvaluacion + ", Instructor_idInstructor=" + Instructor_idInstructor + ", aprobada=" + aprobada + ", nota=" + nota + ", paginacion=" + paginacion + '}';
+        return "Evaluacion{" + "idEvaluacion=" + idEvaluacion + ", Instructor_idInstructor=" + Instructor_idInstructor + ", Estado_idEstado="+Estado_idEstado+", nota=" + nota + ", paginacion=" + paginacion + '}';
     }
 
     public ArrayList listar(int pagina) {
@@ -63,32 +81,33 @@ public class Evaluacion {
         Statement st = conexion.conectar();
         ArrayList listaEvaluacion = new ArrayList();
         Evaluacion laEvaluacion;
-        String listado = "SELECT * FROM " + this.getClass().getSimpleName() + " JOIN instructor ON '" + getInstructor_idInstructor() + "'=instructor.idInstructor";
+        String listado = "SELECT * FROM " + this.getClass().getSimpleName();
         System.out.println("listado ficha " + listado);
-        if (pagina > 0) {
+        if (pagina > 0)
+        {
             int paginacionMax = pagina * this.paginacion;
             int paginacionMin = paginacionMax - this.paginacion;
             listado = "SELECT * FROM " + this.getClass().getSimpleName()
                     + " ORDER BY idEvaluacion LIMIT " + paginacionMin + "," + paginacionMax;
         }
 
-        try {
+        try
+        {
             ResultSet rs = st.executeQuery(listado);
-            while (rs.next()) {
+            System.out.println("listado Evaluacion ejecutado");
+
+            while (rs.next())
+            {
                 laEvaluacion = new Evaluacion();
                 laEvaluacion.setIdEvaluacion(rs.getInt("idEvaluacion"));
-
-                Instructor unInstructor = new Instructor();
-                unInstructor.setIdInstructor(rs.getInt("idInstructor"));
-                unInstructor.setNombreInstructor(rs.getString("nombreInstructor"));
-                laEvaluacion.setInstructor_idInstructor(unInstructor);
-
-                laEvaluacion.setAprobada(rs.getBoolean("aprobada"));
+                laEvaluacion.setIdInstructor(rs.getInt("Instructor_idInstructor"));
+                laEvaluacion.setIdEstado(rs.getInt("Estado_idEstado"));
                 laEvaluacion.setNota(rs.getFloat("nota"));
 
                 listaEvaluacion.add(laEvaluacion);
             }
-        } catch (SQLException ex) {
+        } catch (SQLException ex)
+        {
             System.err.println("Error al listar Evaluacion:" + ex.getLocalizedMessage());
         }
         conexion.desconectar();

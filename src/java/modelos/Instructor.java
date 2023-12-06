@@ -16,13 +16,15 @@ import java.util.Date;
  * @author Sena
  */
 public class Instructor {
+
     int idInstructor;
     String nombreInstructor;
     BigInteger celularInstructor;
     Date inicioContrato;
     Date finalContrato;
-    String correoInstructor;;
-    int paginacion=10;
+    String correoInstructor;
+    
+    int paginacion = 10;
 
     public int getIdInstructor() {
         return idInstructor;
@@ -76,40 +78,43 @@ public class Instructor {
     public String toString() {
         return "Instructor{" + "idInstructor=" + idInstructor + ", nombreInstructor=" + nombreInstructor + ", celularInstructor=" + celularInstructor + ", inicioContrato=" + inicioContrato + ", finalContrato=" + finalContrato + ", correoInstructor=" + correoInstructor + ", paginacion=" + paginacion + '}';
     }
-    
-    
-    
-    public ArrayList listar (int pagina){
+
+    public ArrayList listar(int pagina) {
         Conexion conexion = new Conexion();
         Statement st = conexion.conectar();
         ArrayList listaInstructor = new ArrayList();
         Instructor elInstructor;
-        String listado = "SELECT * FROM "+this.getClass().getSimpleName();
-        System.out.println("listado ficha "+listado);
-        if (pagina>0) {
+        String listado = "SELECT * FROM " + this.getClass().getSimpleName();
+        System.out.println("listado ficha " + listado);
+        if (pagina > 0)
+        {
             int paginacionMax = pagina * this.paginacion;
             int paginacionMin = paginacionMax - this.paginacion;
-            listado = "SELECT * FROM "+this.getClass().getSimpleName()+
-                    " ORDER BY idInstructor LIMIT "+paginacionMin+","+paginacionMax;
+            listado = "SELECT * FROM " + this.getClass().getSimpleName()
+                    + " ORDER BY idInstructor LIMIT " + paginacionMin + "," + paginacionMax;
         }
-        
-        try {
+
+        try
+        {
             ResultSet rs = st.executeQuery(listado);
-            while (rs.next()) {
+            System.out.println("listado Instructor ejecutado");
+
+            while (rs.next())
+            {
                 elInstructor = new Instructor();
                 elInstructor.setIdInstructor(rs.getInt("idInstructor"));
 
-                                
-                elInstructor.setNombreInstructor(rs.getString("nombreInstructor"));                
+                elInstructor.setNombreInstructor(rs.getString("nombreInstructor"));
                 elInstructor.setInicioContrato(rs.getDate("inicioContrato"));
                 elInstructor.setFinalContrato(rs.getDate("finalContrato"));
                 elInstructor.setCorreoInstructor(rs.getString("correoInstructor"));
                 listaInstructor.add(elInstructor);
             }
-        } catch (SQLException ex) {
-            System.err.println("Error al listar Instructor:"+ex.getLocalizedMessage());
+        } catch (SQLException ex)
+        {
+            System.err.println("Error al listar Instructor:" + ex.getLocalizedMessage());
         }
         conexion.desconectar();
         return listaInstructor;
-    }  
+    }
 }

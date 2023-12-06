@@ -17,6 +17,8 @@ public class Competencia {
 
     int idCompetencia;
     String nombreCompetencia;
+    int idFicha;
+    Ficha Ficha_idFicha; 
     int paginacion = 10;
 
     public int getIdCompetencia() {
@@ -35,12 +37,28 @@ public class Competencia {
         this.nombreCompetencia = nombreCompetencia;
     }
 
+    public int getIdFicha() {
+        return idFicha;
+    }
+
+    public void setIdFicha(int idFicha) {
+        this.idFicha = idFicha;
+    }
+
+    public Ficha getFicha_idFicha() {
+        return Ficha_idFicha;
+    }
+
+    public void setFicha_idFicha(Ficha Ficha_idFicha) {
+        this.Ficha_idFicha = Ficha_idFicha;
+    }
+
+    
+    
     @Override
     public String toString() {
         return "Competencia{" + "idCompetencia=" + idCompetencia + ", nombreCompetencia=" + nombreCompetencia + ", paginacion=" + paginacion + '}';
     }
-
-
 
     public ArrayList listar(int pagina) {
         Conexion conexion = new Conexion();
@@ -48,7 +66,7 @@ public class Competencia {
         ArrayList listaCompetencias = new ArrayList();
         Competencia laCompetencia;
         String listado = "SELECT * FROM " + this.getClass().getSimpleName();
-        System.out.println("listado ficha "+listado);
+        System.out.println("listado ficha " + listado);
         if (pagina > 0)
         {
             int paginacionMax = pagina * this.paginacion;
@@ -60,11 +78,14 @@ public class Competencia {
         try
         {
             ResultSet rs = st.executeQuery(listado);
+            System.out.println("listado competencia ejecutado");
+
             while (rs.next())
             {
                 laCompetencia = new Competencia();
                 laCompetencia.setIdCompetencia(rs.getInt("idCompetencia"));
-                laCompetencia.setNombreCompetencia("nombreCompetencia");
+                laCompetencia.setNombreCompetencia(rs.getString("nombreCompetencia"));
+                laCompetencia.setIdFicha(rs.getInt("Ficha_idFicha"));
 
                 listaCompetencias.add(laCompetencia);
             }
@@ -76,5 +97,4 @@ public class Competencia {
         return listaCompetencias;
     }
 
-    
 }

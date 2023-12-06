@@ -6,7 +6,6 @@ package controladores;
 
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,6 +15,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import modelos.Aprendiz;
 import modelos.Competencia;
+import modelos.Estado;
 import modelos.Evaluacion;
 import modelos.Ficha;
 import modelos.Instructor;
@@ -25,7 +25,8 @@ import modelos.Instructor;
  * @author Sena
  */
 @WebServlet(name = "ControladorAprendiz", urlPatterns
-        = {
+        =
+        {
             "/ControladorAprendiz"
         })
 public class ControladorAprendiz extends HttpServlet {
@@ -63,49 +64,52 @@ public class ControladorAprendiz extends HttpServlet {
             throws ServletException, IOException {
         String idAprendiz = request.getParameter("fIdAprendiz");
         String idFicha = request.getParameter("fIdFicha");
-        String idCompetencia = request.getParameter("fIdCompetencia");
         String idEvaluacion = request.getParameter("fIdEvaluacion");
-        String idInstructor = request.getParameter("fIdInstructor");
+        String nota = request.getParameter("fNota");
+        String estadoStr = request.getParameter("fEstado");
         String nombreAprendiz = request.getParameter("fNombreAprendiz");
         String celularAprendiz = request.getParameter("fCelularAprendiz");
         String correoAprendiz = request.getParameter("fCorreoAprendiz");
 
         String accion = request.getParameter("fAccion");
-
+        
+        float notaParseada = 0;
+        try
+        {
+            notaParseada = Float.parseFloat(nota);
+        } catch (NumberFormatException nfe)
+        {
+            System.err.println("Error en parsear nota " + nfe.getLocalizedMessage());
+        }
         int idA = 0;
-        try {
+        try
+        {
             idA = Integer.parseInt(idAprendiz);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe)
+        {
             System.err.println("Error en parsear idAprendiz " + nfe.getLocalizedMessage());
         }
         int idF = 0;
-        try {
+        try
+        {
             idF = Integer.parseInt(idFicha);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe)
+        {
             System.err.println("Error en parsear idFicha " + nfe.getLocalizedMessage());
         }
-        int idC = 0;
-        try {
-            idC = Integer.parseInt(idCompetencia);
-        } catch (NumberFormatException nfe) {
-            System.err.println("Error en parsear idCompetencia " + nfe.getLocalizedMessage());
-        }
         int idE = 0;
-        try {
+        try
+        {
             idE = Integer.parseInt(idEvaluacion);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException nfe)
+        {
             System.err.println("Error en parsear idEvaluacion " + nfe.getLocalizedMessage());
-        }
-        int idI = 0;
-        try {
-            idI = Integer.parseInt(idInstructor);
-        } catch (NumberFormatException nfe) {
-            System.err.println("Error en parsear idInstructor " + nfe.getLocalizedMessage());
         }
 
         BigInteger celApre = null;
 
-        if (celularAprendiz != null && !celularAprendiz.isEmpty()) {
+        if (celularAprendiz != null && !celularAprendiz.isEmpty())
+        {
             celApre = new BigInteger(celularAprendiz);
         }
 
@@ -127,7 +131,7 @@ public class ControladorAprendiz extends HttpServlet {
 
         Aprendiz aprendicesListados = new Aprendiz();
         ArrayList<Aprendiz> listaAprendices = aprendicesListados.listar(0);
-        request.setAttribute("aprendicesListados", listaAprendices);
+        request.setAttribute("listaAprendices", listaAprendices);
 
         Aprendiz unAprendiz = new Aprendiz();
         unAprendiz.setIdAprendiz(idA);
@@ -135,12 +139,15 @@ public class ControladorAprendiz extends HttpServlet {
         Ficha ficha = new Ficha();
         ficha.setIdFicha(idF);
         unAprendiz.setFicha_idFicha(ficha);
-        unAprendiz.setFicha_Competencia_idCompetencia(ficha);
-
+        
         Evaluacion evaluacion = new Evaluacion();
         evaluacion.setIdEvaluacion(idE);
+        evaluacion.setNota(notaParseada);
         unAprendiz.setEvaluacion_idEvaluacion(evaluacion);
-        unAprendiz.setEvaluacion_Instructor_idInstructor(evaluacion);
+        
+        Estado estado = new Estado();
+        estado.setEstado(estadoStr);
+        evaluacion.setEstado_idEstado(estado);
 
         unAprendiz.setNombreAprendiz(nombreAprendiz);
         unAprendiz.setCelularAprendiz(celApre);
@@ -148,15 +155,25 @@ public class ControladorAprendiz extends HttpServlet {
 
         request.setAttribute("unAprendiz", unAprendiz);
 
-        switch (accion.toLowerCase()) {
-            case "insertar" -> {
+        switch (accion.toLowerCase())
+        {
+            case "insertar" ->
+            {
                 unAprendiz.insertar();
+                String nuevaURL = "/index.jsp?insertarMensaje=true";
+                response.sendRedirect(request.getContextPath() + nuevaURL);
             }
-            case "modificar" -> {
+            case "modificar" ->
+            {
                 unAprendiz.modificar();
+                String nuevaURL = "/index.jsp?modificarMensaje=true";
+                response.sendRedirect(request.getContextPath() + nuevaURL);
             }
-            case "eliminar" -> {
+            case "eliminar" ->
+            {
                 unAprendiz.eliminar();
+                String nuevaURL = "/index.jsp?eliminarMensaje=true";
+                response.sendRedirect(request.getContextPath() + nuevaURL);
             }
         }
 

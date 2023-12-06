@@ -26,7 +26,7 @@ public class Conexion {
         {
             Context ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup("jdbc/BDEvaluacion");
-            conexion = ds.getConnection("admin1", "admin123._.");
+            conexion = ds.getConnection("admin", "admin123._.");
             st = conexion.createStatement();
             System.out.println("Conexión establecida correctamente");
         } catch (NamingException ex)

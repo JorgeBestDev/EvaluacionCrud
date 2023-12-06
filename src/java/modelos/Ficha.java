@@ -20,7 +20,6 @@ public class Ficha {
     String nombreFicha;
     Date fechaInicio;
     Date fechaCierre;
-    Competencia Competencia_idCompetencia;
     int paginacion = 10;
 
     public int getIdFicha() {
@@ -55,27 +54,21 @@ public class Ficha {
         this.fechaCierre = fechaCierre;
     }
 
-    public Competencia getCompetencia_idCompetencia() {
-        return Competencia_idCompetencia;
-    }
-
-    public void setCompetencia_idCompetencia(Competencia Competencia_idCompetencia) {
-        this.Competencia_idCompetencia = Competencia_idCompetencia;
-    }
 
     @Override
     public String toString() {
-        return "Ficha{" + "idFicha=" + idFicha + ", nombreFicha=" + nombreFicha + ", fechaInicio=" + fechaInicio + ", fechaCierre=" + fechaCierre + ", Competencia_idCompetencia=" + Competencia_idCompetencia + ", paginacion=" + paginacion + '}';
+        return "Ficha{" + "idFicha=" + idFicha + ", nombreFicha=" + nombreFicha + ", fechaInicio=" + fechaInicio + ", fechaCierre=" + fechaCierre + ", paginacion=" + paginacion + '}';
     }
     
     
 
     public ArrayList listar(int pagina) {
+        System.out.println("entra a listar");
         Conexion conexion = new Conexion();
         Statement st = conexion.conectar();
         ArrayList listaFichas = new ArrayList();
         Ficha laFicha;
-        String listado = "SELECT * FROM " + this.getClass().getSimpleName() + " JOIN competencia ON '"+getCompetencia_idCompetencia()+"'=competencia.idCompetencia";
+        String listado = "SELECT * FROM " + this.getClass().getSimpleName();
         System.out.println("listado ficha "+listado);
         if (pagina > 0)
         {
@@ -88,19 +81,15 @@ public class Ficha {
         try
         {
             ResultSet rs = st.executeQuery(listado);
+            System.out.println("listado ficha ejecutado");
             while (rs.next())
             {
                 laFicha = new Ficha();
                 laFicha.setIdFicha(rs.getInt("idFicha"));
                 laFicha.setNombreFicha(rs.getString("nombreFicha"));
                 laFicha.setFechaInicio(rs.getDate("fechaInicio"));
-                laFicha.setFechaCierre(rs.getDate("fechaCierre"));
-                
-                Competencia unaCompetencia = new Competencia();
-                unaCompetencia.setIdCompetencia(rs.getInt("idCompetencia"));
-                unaCompetencia.setNombreCompetencia(rs.getString("nombreCompetencia"));
-                laFicha.setCompetencia_idCompetencia(unaCompetencia);
-
+                laFicha.setFechaCierre(rs.getDate("fechaCierre"));               
+                System.out.println("la ficha es: "+laFicha);
                 listaFichas.add(laFicha);
             }
         } catch (SQLException ex)

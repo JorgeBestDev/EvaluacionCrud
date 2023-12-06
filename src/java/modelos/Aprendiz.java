@@ -16,9 +16,7 @@ public class Aprendiz {
 
     int idAprendiz;
     Ficha Ficha_idFicha;
-    Ficha Ficha_Competencia_idCompetencia;
     Evaluacion Evaluacion_idEvaluacion;
-    Evaluacion Evaluacion_Instructor_idInstructor;
     String nombreAprendiz;
     BigInteger celularAprendiz;
     String correoAprendiz;
@@ -40,28 +38,12 @@ public class Aprendiz {
         this.Ficha_idFicha = Ficha_idFicha;
     }
 
-    public Ficha getFicha_Competencia_idCompetencia() {
-        return Ficha_Competencia_idCompetencia;
-    }
-
-    public void setFicha_Competencia_idCompetencia(Ficha Ficha_Competencia_idCompetencia) {
-        this.Ficha_Competencia_idCompetencia = Ficha_Competencia_idCompetencia;
-    }
-
     public Evaluacion getEvaluacion_idEvaluacion() {
         return Evaluacion_idEvaluacion;
     }
 
     public void setEvaluacion_idEvaluacion(Evaluacion Evaluacion_idEvaluacion) {
         this.Evaluacion_idEvaluacion = Evaluacion_idEvaluacion;
-    }
-
-    public Evaluacion getEvaluacion_Instructor_idInstructor() {
-        return Evaluacion_Instructor_idInstructor;
-    }
-
-    public void setEvaluacion_Instructor_idInstructor(Evaluacion Evaluacion_Instructor_idInstructor) {
-        this.Evaluacion_Instructor_idInstructor = Evaluacion_Instructor_idInstructor;
     }
 
     public String getNombreAprendiz() {
@@ -90,7 +72,7 @@ public class Aprendiz {
 
     @Override
     public String toString() {
-        return "Aprendiz{" + "idAprendiz=" + idAprendiz + ", Ficha_idFicha=" + Ficha_idFicha + ", Ficha_Competencia_idCompetencia=" + Ficha_Competencia_idCompetencia + ", Evaluacion_idEvaluacion=" + Evaluacion_idEvaluacion + ", Evaluacion_Instructor_idInstructor=" + Evaluacion_Instructor_idInstructor + ", nombreAprendiz=" + nombreAprendiz + ", celularAprendiz=" + celularAprendiz + ", correoAprendiz=" + correoAprendiz + ", paginacion=" + paginacion + '}';
+        return "Aprendiz{" + "idAprendiz=" + idAprendiz + ", Ficha_idFicha=" + Ficha_idFicha + ", Evaluacion_idEvaluacion=" + Evaluacion_idEvaluacion + ", nombreAprendiz=" + nombreAprendiz + ", celularAprendiz=" + celularAprendiz + ", correoAprendiz=" + correoAprendiz + ", paginacion=" + paginacion + '}';
     }
 
     public ArrayList listar(int pagina) {
@@ -99,59 +81,50 @@ public class Aprendiz {
         ArrayList listaAprendiz = new ArrayList();
         Aprendiz elAprendiz;
         System.out.println("entra al listar");
-        String listado = "SELECT \n"
-                + "    instructor.idInstructor, \n"
-                + "    instructor.nombreInstructor, \n"
-                + "    evaluacion.idEvaluacion, \n"
-                + "    evaluacion.aprobada,\n"
-                + "    competencia.idCompetencia, \n"
-                + "    competencia.nombreCompetencia, \n"
-                + "    ficha.idFicha, \n"
-                + "    ficha.nombreFicha\n"
-                + "FROM aprendiz\n"
-                + "JOIN evaluacion ON '"+getEvaluacion_idEvaluacion()+"' = evaluacion.idEvaluacion\n"
-                + "JOIN instructor ON '"+getEvaluacion_Instructor_idInstructor()+"' = instructor.idInstructor\n"
-                + "JOIN ficha ON '"+getFicha_idFicha()+"' = ficha.idFicha\n"
-                + "JOIN competencia ON '"+getFicha_Competencia_idCompetencia()+"' = competencia.idCompetencia ORDER BY idAprendiz";
+        String listado = "SELECT * "
+        + "FROM aprendiz "
+        + "JOIN evaluacion ON aprendiz.Evaluacion_idEvaluacion = evaluacion.idEvaluacion "
+        + "JOIN ficha ON aprendiz.Ficha_idFicha = ficha.idFicha "
+        + "ORDER BY idAprendiz ";
+
         System.out.println("Listado Aprendiz: " + listado);
-        if (pagina > 0) {
+        if (pagina > 0)
+        {
             int paginacionMax = pagina * this.paginacion;
             int paginacionMin = paginacionMax - this.paginacion;
             listado = "SELECT * FROM " + this.getClass().getSimpleName()
                     + " ORDER BY idAprendiz LIMIT " + paginacionMin + "," + paginacionMax;
         }
 
-        try {
+        try
+        {
             ResultSet rs = st.executeQuery(listado);
-            while (rs.next()) {
+            System.out.println("listado aprendiz ejecutado");
+
+            while (rs.next())
+            {
                 elAprendiz = new Aprendiz();
                 elAprendiz.setIdAprendiz(rs.getInt("idAprendiz"));
+
+                
 
                 Ficha laFicha = new Ficha();
                 laFicha.setIdFicha(rs.getInt("idFicha"));
                 laFicha.setNombreFicha("nombreFicha");
                 elAprendiz.setFicha_idFicha(laFicha);
-
-                Competencia unaCompetencia = new Competencia();
-                unaCompetencia.setIdCompetencia(rs.getInt("idCompetencia"));
-                unaCompetencia.setNombreCompetencia(rs.getString("nombreCompetencia"));
-                laFicha.setCompetencia_idCompetencia(unaCompetencia);
-
+                
                 Evaluacion laEvaluacion = new Evaluacion();
                 laEvaluacion.setIdEvaluacion(rs.getInt("idEvaluacion"));
                 elAprendiz.setEvaluacion_idEvaluacion(laEvaluacion);
 
-                Instructor unInstructor = new Instructor();
-                unInstructor.setIdInstructor(rs.getInt("idInstructor"));
-                unInstructor.setNombreInstructor(rs.getString("nombreInstructor"));
-                laEvaluacion.setInstructor_idInstructor(unInstructor);
 
                 elAprendiz.setNombreAprendiz(rs.getString("nombreAprendiz"));
                 elAprendiz.setCelularAprendiz(BigInteger.valueOf(rs.getLong("celularAprendiz")));
                 elAprendiz.setCorreoAprendiz(rs.getString("correoAprendiz"));
                 listaAprendiz.add(elAprendiz);
             }
-        } catch (SQLException ex) {
+        } catch (SQLException ex)
+        {
             System.err.println("Error al listar Aprendiz:" + ex.getLocalizedMessage());
         }
         conexion.desconectar();
@@ -161,11 +134,15 @@ public class Aprendiz {
     public void insertar() {
         Conexion conexion = new Conexion();
         Statement st = conexion.conectar();
-        try {
-            String sql = "INSERT INTO aprendiz (idAprendiz, Ficha_idFicha, Ficha_Competencia_idCompetencia, Evaluacion_idEvaluacion, Evaluacion_Instructor_idInstructor , nombreAprendiz, celularAprendiz, correoAprendiz) VALUES "
-                    + "('" + getIdAprendiz() + "','" + getFicha_idFicha() + "','" + getFicha_Competencia_idCompetencia() + "','" + getEvaluacion_idEvaluacion() + "','" + getEvaluacion_Instructor_idInstructor() + " , '" + getNombreAprendiz() + "','" + getCelularAprendiz() + "','" + getCorreoAprendiz() + "')";
+        try
+        {
+            String sql2 = "INSERT INTO evaluacion(idEvaluacion, nota) VALUES (" + getEvaluacion_idEvaluacion().getIdEvaluacion() + "," + getEvaluacion_idEvaluacion().getNota() + ")";
+            String sql = "INSERT INTO aprendiz (idAprendiz, Ficha_idFicha, Evaluacion_idEvaluacion , nombreAprendiz, celularAprendiz, correoAprendiz) VALUES "
+                    + "('" + getIdAprendiz() + "','" + getFicha_idFicha().getIdFicha() + "','" + getEvaluacion_idEvaluacion() + "', '" + getNombreAprendiz() + "','" + getCelularAprendiz() + "','" + getCorreoAprendiz() + "')";
             st.executeUpdate(sql);
-        } catch (SQLException ex) {
+            st.executeUpdate(sql2);
+        } catch (SQLException ex)
+        {
             System.err.println("Error al insertar Aprendiz:" + ex.getLocalizedMessage());
         }
     }
@@ -173,12 +150,15 @@ public class Aprendiz {
     public void modificar() {
         Conexion conexion = new Conexion();
         Statement st = conexion.conectar();
-        try {
-            String sql = "UPDATE competencia SET Ficha_idFicha='" + getFicha_idFicha() + "', Ficha_Competencia_idCompetencia='" + getFicha_Competencia_idCompetencia() + "', Evaluacion_idEvaluacion='" + getEvaluacion_idEvaluacion() + "',"
-                    + " Evaluacion_Instructor_idInstructor='" + getEvaluacion_Instructor_idInstructor() + "' , nombreAprendiz = '" + getNombreAprendiz() + "', celularAprendiz='" + getCelularAprendiz() + "', correoAprendiz='" + getCorreoAprendiz() + ""
+        try
+        {
+            String sql = "UPDATE Aprendiz SET Ficha_idFicha='" + getFicha_idFicha().idFicha + "', Evaluacion_idEvaluacion='" + getEvaluacion_idEvaluacion().idEvaluacion + "',"
+                    + "nombreAprendiz = '" + getNombreAprendiz() + "', celularAprendiz='" + getCelularAprendiz() + "', correoAprendiz='" + getCorreoAprendiz() + ""
                     + "' WHERE idAprendiz = '" + getIdAprendiz() + "'";
             st.executeUpdate(sql);
-        } catch (SQLException ex) {
+            System.out.println("APRENDIZ MODIFICADO");
+        } catch (SQLException ex)
+        {
             System.err.println("Error al modificar Aprendiz: " + ex.getLocalizedMessage());
         }
     }
@@ -186,10 +166,13 @@ public class Aprendiz {
     public void eliminar() {
         Conexion conexion = new Conexion();
         Statement st = conexion.conectar();
-        try {
-            String sql = "DELETE FROM competencia WHERE idAprendiz = '" + getIdAprendiz() + "'";
+        try
+        {
+            String sql = "DELETE FROM Aprendiz WHERE idAprendiz = '" + getIdAprendiz() + "'";
             st.executeUpdate(sql);
-        } catch (SQLException ex) {
+            System.out.println("APRENDIZ ELIMINADO");
+        } catch (SQLException ex)
+        {
             System.err.println("Error al eliminar Aprendiz: " + ex.getLocalizedMessage());
         }
     }
